@@ -11,6 +11,6 @@ Feature: make a deposit
     Examples:
       | initialAmount | initialCents | depositsAmount | depositsCents | finalAmount | finalCents |
       | 0             | 0            | 0              | 0             | 0           | 0          |
-      | 0             |              | 10             | 0             | 10          | 0          |
+      | 0             | 0            | 10             | 0             | 10          | 0          |
       | 10            | 0            | 5              | 25            | 15          | 25         |
       | 10            | 50           | 5              | 25            | 15          | 75         |
