@@ -5,19 +5,19 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class MoneyJPA {
 
-	private Integer amount;
+	private Integer euros;
 	private Integer cents;
 
 	public MoneyJPA() {
 	}
 
-	public MoneyJPA(Integer amount, Integer cents) {
-		this.amount = amount;
+	public MoneyJPA(Integer euros, Integer cents) {
+		this.euros = euros;
 		this.cents = cents;
 	}
 
-	public Integer getAmount() {
-		return amount;
+	public Integer getEuros() {
+		return euros;
 	}
 
 	public Integer getCents() {

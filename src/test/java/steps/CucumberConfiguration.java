@@ -9,11 +9,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootConfiguration
-@ComponentScan(basePackages = { "repository", "infra","exposition","command" })
+@ComponentScan(basePackages = {"repository", "infra", "exposition", "command"})
 @EnableAutoConfiguration
-@EnableJpaRepositories(basePackages = { "repository" })
+@EnableJpaRepositories(basePackages = {"repository"})
 @EntityScan(basePackages = {"infra"})
 public class CucumberConfiguration {
-//	@SpyBean
-//	BankController bankController;
 }

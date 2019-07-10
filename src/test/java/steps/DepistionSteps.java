@@ -1,6 +1,5 @@
 package steps;
 
-import cucumber.api.PendingException;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -10,7 +9,6 @@ import infra.BankAccountJPA;
 import infra.MoneyJPA;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.assertj.core.api.Assertions;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -56,7 +54,7 @@ public class DepistionSteps {
         BankAccountJPA savedBankAccount = bankAccountSpringDataRepository.save(bankAccount);
 
         MoneyJPA savedmoney = savedBankAccount.getMoney();
-        Integer savedAmount = savedmoney.getAmount();
+        Integer savedAmount = savedmoney.getEuros();
         Integer savedCents = savedmoney.getCents();
 
         assertThat(savedBankAccount.getClientId()).isEqualTo(clientId);
@@ -85,7 +83,7 @@ public class DepistionSteps {
 
         MoneyJPA savedAccount = savedBankAccount.getMoney();
 
-        assertThat(savedAccount.getAmount()).isEqualTo(finalamount);
+        assertThat(savedAccount.getEuros()).isEqualTo(finalamount);
         assertThat(savedAccount.getCents()).isEqualTo(finalcents);
     }
 

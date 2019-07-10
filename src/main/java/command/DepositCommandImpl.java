@@ -1,10 +1,10 @@
 package command;
 
-import exposition.controller.BankController;
 import infra.BankAccountJPA;
 import infra.MoneyJPA;
 import org.springframework.stereotype.Component;
 import repository.BankAccountSpringDataRepository;
+import service.DepositCalculator;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -20,24 +20,19 @@ public class DepositCommandImpl implements DepositCommand {
 
     @Override
     public BankAccountJPA deposit(String clientId, MoneyJPA moneyToDeposit) throws Exception {
-        BankAccountJPA bankAccountJPA = null;
+        BankAccountJPA bankAccountJPA = retrieveBankAccount(clientId);
+        return bankAccountSpringDataRepository.save(DepositCalculator.calculDeposit(clientId, moneyToDeposit, bankAccountJPA));
+    }
+
+    private BankAccountJPA retrieveBankAccount(String clientId) throws Exception {
+        BankAccountJPA bankAccountJPA;
         try {
             bankAccountJPA = bankAccountSpringDataRepository.findById(clientId).orElseThrow(() -> new Exception("can't retrieve account"));
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             throw e;
         }
-
-        MoneyJPA savedMoney = bankAccountJPA.getMoney();
-
-        int resultAmount = savedMoney.getAmount() + moneyToDeposit.getAmount();
-        int resultCent = savedMoney.getCents() + moneyToDeposit.getCents();
-        if (resultCent >= 100) {
-            resultAmount++;
-        }
-        MoneyJPA resultMoney = new MoneyJPA(resultAmount, resultCent);
-        BankAccountJPA resultBankAccount = new BankAccountJPA(clientId, resultMoney);
-
-        return bankAccountSpringDataRepository.save(resultBankAccount);
+        return bankAccountJPA;
     }
+
 }
