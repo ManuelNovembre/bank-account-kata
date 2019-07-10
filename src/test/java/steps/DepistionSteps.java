@@ -23,61 +23,70 @@ import repository.BankAccountSpringDataRepository;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = BankAccountApplication.class)
-@ContextConfiguration(classes = { CucumberConfiguration.class })
+@ContextConfiguration(classes = {CucumberConfiguration.class})
 public class DepistionSteps {
-	public static final String DEPOSIT_END_POINT = "/bank/{clientId}/deposit";
-	private static final org.slf4j.Logger LOGGER = getLogger(DepistionSteps.class);
-	@Autowired
-	private BankAccountSpringDataRepository bankAccountSpringDataRepository;
+    public static final String DEPOSIT_END_POINT = "/bank/{clientId}/deposit";
+    private static final org.slf4j.Logger LOGGER = getLogger(DepistionSteps.class);
+    @Autowired
+    private BankAccountSpringDataRepository bankAccountSpringDataRepository;
 
-	@LocalServerPort
-	private int port;
+    @LocalServerPort
+    private int port;
 
-	private Response response;
-	private String uri;
+    private Response response;
+    private String uri;
 
-	@Before
-	public void setUp() {
-		RestAssured.port = port;
-		uri = "http://localhost:" + port;
-	}
+    @Before
+    public void setUp() {
+        RestAssured.port = port;
+        uri = "http://localhost:" + port;
+    }
 
-	@Given("^a bank client \"([^\"]*)\" has (.+).(.+) in is account$")
-	public void a_bank_client_something_has_in_is_account(String clientId, Integer initialamount, Integer initialcents) throws Throwable {
-		MoneyJPA money = new MoneyJPA(initialamount, initialcents);
+    @Given("^a bank client \"([^\"]*)\" has (.+).(.+) in is account$")
+    public void a_bank_client_something_has_in_is_account(String clientId, Integer initialamount, Integer initialcents) throws Throwable {
+        MoneyJPA money = new MoneyJPA(initialamount, initialcents);
 
-		BankAccountJPA bankAccount = new BankAccountJPA(clientId, money);
+        BankAccountJPA bankAccount = new BankAccountJPA(clientId, money);
 
-		BankAccountJPA savedBankAccount = bankAccountSpringDataRepository.save(bankAccount);
-		MoneyJPA savedmoney = savedBankAccount.getMoney();
-		Integer savedAmount = savedmoney.getAmount();
-		Integer savedCents = savedmoney.getCents();
+        BankAccountJPA savedBankAccount = bankAccountSpringDataRepository.save(bankAccount);
 
-		Assertions.assertThat(savedAmount).isEqualTo(initialamount);
-		Assertions.assertThat(savedCents).isEqualTo(initialcents);
-	}
+        MoneyJPA savedmoney = savedBankAccount.getMoney();
+        Integer savedAmount = savedmoney.getAmount();
+        Integer savedCents = savedmoney.getCents();
 
-	@When("^\"([^\"]*)\" deposits (.+).(.+)$")
-	public void something_deposits_(String clientId, Integer depositsamount, Integer depositscents) throws Throwable {
+        assertThat(savedBankAccount.getClientId()).isEqualTo(clientId);
+        assertThat(savedAmount).isEqualTo(initialamount);
+        assertThat(savedCents).isEqualTo(initialcents);
+    }
 
-		Map<String, Integer> body = new HashMap<>();
-		body.put("money", depositsamount);
-		body.put("cents", depositscents);
-		response = RestAssured.given()
-							  .body(body)
-							  .contentType(MediaType.APPLICATION_JSON_VALUE)
-							  .when()
-							  .post(uri + DEPOSIT_END_POINT, clientId);
+    @When("^\"([^\"]*)\" deposits (.+).(.+)$")
+    public void something_deposits_(String clientId, Integer depositsamount, Integer depositscents) throws Throwable {
 
-	}
+        Map<String, Integer> body = new HashMap<>();
+        body.put("money", depositsamount);
+        body.put("cents", depositscents);
+        response = RestAssured.given()
+                .body(body)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post(uri + DEPOSIT_END_POINT, clientId);
 
-	@Then("^\"([^\"]*)\" has (.+).(.+) in his account$")
-	public void something_has_in_his_account(String clientName, Integer finalamount, Integer finalcents) throws Throwable {
-		throw new PendingException();
-	}
+    }
+
+    @Then("^\"([^\"]*)\" has (.+).(.+) in his account$")
+    public void something_has_in_his_account(String clientId, Integer finalamount, Integer finalcents) throws Throwable {
+        BankAccountJPA savedBankAccount = bankAccountSpringDataRepository.findById(clientId).orElse(null);
+        assertThat(savedBankAccount).isNotNull();
+
+        MoneyJPA savedAccount = savedBankAccount.getMoney();
+
+        assertThat(savedAccount.getAmount()).isEqualTo(finalamount);
+        assertThat(savedAccount.getCents()).isEqualTo(finalcents);
+    }
 
 }

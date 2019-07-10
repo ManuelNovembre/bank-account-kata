@@ -7,7 +7,7 @@ import javax.persistence.Id;
 @Entity(name = "bank_account")
 public class BankAccountJPA {
 	@Id
-	private String clientName;
+	private String clientId;
 
 	@Embedded
 	private MoneyJPA money;
@@ -15,8 +15,8 @@ public class BankAccountJPA {
 	public BankAccountJPA() {
 	}
 
-	public BankAccountJPA(String clientName, MoneyJPA money) {
-		this.clientName = clientName;
+	public BankAccountJPA(String clientId, MoneyJPA money) {
+		this.clientId = clientId;
 		this.money = money;
 	}
 
@@ -24,7 +24,15 @@ public class BankAccountJPA {
 		return money;
 	}
 
-	public String getClientName() {
-		return clientName;
+	public String getClientId() {
+		return clientId;
+	}
+
+	@Override
+	public String toString() {
+		return "BankAccountJPA{" +
+				"clientId='" + clientId + '\'' +
+				", money=" + money +
+				'}';
 	}
 }
