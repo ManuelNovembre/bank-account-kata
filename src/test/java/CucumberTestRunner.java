@@ -11,5 +11,5 @@ import org.springframework.test.context.ContextConfiguration;
         features = "classpath:features/",
         plugin = {"pretty", "html:target/cucumber", "json:target/cucumber-reports/cucumber.json"},
         glue = "steps")
-public class CucumberTest {
+public class CucumberTestRunner {
 }
