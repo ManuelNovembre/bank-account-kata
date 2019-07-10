@@ -33,8 +33,6 @@ public class WithdrawSteps {
     private int port;
 
     private String uri;
-    @Autowired
-    private CucumberContext cucumberContext;
 
     @Before
     public void setUp() {
@@ -42,17 +40,18 @@ public class WithdrawSteps {
         uri = "http://localhost:" + port;
     }
 
-    @When("^\"([^\"]*)\" withdraws (.+).(.+)$")
-    public void something_withdraws_(String clientId, Integer depositsamount, Integer depositscents) throws Throwable {
+    @When("^\"([^\"]*)\" withdraws (\\d+).(\\d+)$")
+    public void something_withdraws_(String clientId, Integer withdrawamount, Integer withdrawcents) throws Throwable {
         Map<String, Integer> body = new HashMap<>();
-        body.put("money", depositsamount);
-        body.put("cents", depositscents);
-        Response response = RestAssured.given()
+        body.put("money", withdrawamount);
+        body.put("cents", withdrawcents);
+        RestAssured.given()
                 .body(body)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post(uri + WITHDRAW_END_POINT, clientId);
+                .post(uri + WITHDRAW_END_POINT, clientId)
+                .then()
+                .statusCode(200);
 
-        cucumberContext.setResponse(response);
     }
 }

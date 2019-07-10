@@ -1,6 +1,7 @@
 package exposition.controller;
 
 import command.DepositCommand;
+import command.WithdrawCommand;
 import exposition.dto.BankRequestDTO;
 import exposition.dto.BankResponseDTO;
 import infra.MoneyJPA;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletRequest;
@@ -27,9 +27,11 @@ public class BankController {
     private static final org.slf4j.Logger LOGGER = getLogger(BankController.class);
 
     private final DepositCommand depositCommand;
+    private final WithdrawCommand withdrawCommand;
 
-    public BankController(DepositCommand depositCommand) {
+    public BankController(DepositCommand depositCommand, WithdrawCommand withdrawCommand) {
         this.depositCommand = depositCommand;
+        this.withdrawCommand = withdrawCommand;
     }
 
     @PostMapping(path = "/{clientId}/deposit", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
@@ -37,6 +39,16 @@ public class BankController {
 
         MoneyJPA moneyToDeposit = new MoneyJPA(bankRequestDTO.getMoney(), bankRequestDTO.getCents());
         depositCommand.deposit(clientId, moneyToDeposit);
+
+        BankResponseDTO responseDTO = null;
+        return new ResponseEntity<>(responseDTO, OK);
+    }
+
+    @PostMapping(path = "/{clientId}/withdraw", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BankResponseDTO> withdraw(@PathVariable(name = "clientId") String clientId, @RequestBody @Valid BankRequestDTO bankRequestDTO, ServletRequest servletRequest) throws Exception {
+
+        MoneyJPA moneyToDeposit = new MoneyJPA(bankRequestDTO.getMoney(), bankRequestDTO.getCents());
+        withdrawCommand.withdraw(clientId, moneyToDeposit);
 
         BankResponseDTO responseDTO = null;
         return new ResponseEntity<>(responseDTO, OK);

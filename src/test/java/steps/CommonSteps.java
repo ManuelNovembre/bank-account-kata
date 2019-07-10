@@ -33,9 +33,9 @@ public class CommonSteps {
     private BankAccountSpringDataRepository bankAccountSpringDataRepository;
 
 
-    @Given("^a bank client \"([^\"]*)\" has (.+).(.+) in is account$")
-    public void a_bank_client_something_has_in_is_account(String clientId, Integer initialamount, Integer initialcents) throws Throwable {
-        MoneyJPA money = new MoneyJPA(initialamount, initialcents);
+    @Given("^a bank client \"([^\"]*)\" has (\\d+).(\\d+) in is account$")
+    public void a_bank_client_something_has_in_is_account(String clientId, Integer initialAmount, Integer initialCents) throws Throwable {
+        MoneyJPA money = new MoneyJPA(initialAmount, initialCents);
 
         BankAccountJPA bankAccount = new BankAccountJPA(clientId, money);
 
@@ -46,20 +46,20 @@ public class CommonSteps {
         Integer savedCents = savedmoney.getCents();
 
         assertThat(savedBankAccount.getClientId()).isEqualTo(clientId);
-        assertThat(savedAmount).isEqualTo(initialamount);
-        assertThat(savedCents).isEqualTo(initialcents);
+        assertThat(savedAmount).isEqualTo(initialAmount);
+        assertThat(savedCents).isEqualTo(initialCents);
     }
 
 
-    @Then("^\"([^\"]*)\" has (.+).(.+) in his account$")
-    public void something_has_in_his_account(String clientId, Integer finalamount, Integer finalcents) throws Throwable {
+    @Then("^\"([^\"]*)\" has \\+?(-?\\d+).(\\d+) in his account$")
+    public void something_has_in_his_account(String clientId, Integer finalAmount, Integer finalCents) throws Throwable {
         BankAccountJPA savedBankAccount = bankAccountSpringDataRepository.findById(clientId).orElse(null);
         assertThat(savedBankAccount).isNotNull();
 
         MoneyJPA savedAccount = savedBankAccount.getMoney();
 
-        assertThat(savedAccount.getEuros()).isEqualTo(finalamount);
-        assertThat(savedAccount.getCents()).isEqualTo(finalcents);
+        assertThat(savedAccount.getEuros()).isEqualTo(finalAmount);
+        assertThat(savedAccount.getCents()).isEqualTo(finalCents);
     }
 
 }

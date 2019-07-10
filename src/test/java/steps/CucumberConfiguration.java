@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootConfiguration
-@ComponentScan(basePackages = {"repository", "infra", "exposition", "command"})
+@ComponentScan(basePackages = {"repository", "infra", "exposition", "command", "steps"})
 @EnableAutoConfiguration
 @EnableJpaRepositories(basePackages = {"repository"})
 @EntityScan(basePackages = {"infra"})

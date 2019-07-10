@@ -5,23 +5,24 @@ import infra.MoneyJPA;
 import org.springframework.stereotype.Component;
 import repository.BankAccountSpringDataRepository;
 import service.DepositCalculator;
+import service.WithdrawCalculator;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
-public class DepositCommandImpl implements DepositCommand {
-    private static final org.slf4j.Logger LOGGER = getLogger(DepositCommandImpl.class);
+public class WithdrawCommandImpl implements WithdrawCommand {
+    private static final org.slf4j.Logger LOGGER = getLogger(WithdrawCommandImpl.class);
 
     private final BankAccountSpringDataRepository bankAccountSpringDataRepository;
 
-    public DepositCommandImpl(BankAccountSpringDataRepository bankAccountSpringDataRepository) {
+    public WithdrawCommandImpl(BankAccountSpringDataRepository bankAccountSpringDataRepository) {
         this.bankAccountSpringDataRepository = bankAccountSpringDataRepository;
     }
 
     @Override
-    public BankAccountJPA deposit(String clientId, MoneyJPA moneyToDeposit) throws Exception {
+    public BankAccountJPA withdraw(String clientId, MoneyJPA moneyToWithdraw) throws Exception {
         BankAccountJPA bankAccountJPA = retrieveBankAccount(clientId);
-        return bankAccountSpringDataRepository.save(DepositCalculator.calculate(clientId, moneyToDeposit, bankAccountJPA));
+        return bankAccountSpringDataRepository.save(WithdrawCalculator.calculate(clientId, moneyToWithdraw, bankAccountJPA));
     }
 
     private BankAccountJPA retrieveBankAccount(String clientId) throws Exception {
@@ -34,5 +35,4 @@ public class DepositCommandImpl implements DepositCommand {
         }
         return bankAccountJPA;
     }
-
 }

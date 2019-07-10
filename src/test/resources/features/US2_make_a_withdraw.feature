@@ -12,7 +12,7 @@ Feature: make a withdraw
       | initialEuros | initialCents | withdrawEuros | withdrawCents | finalEuros | finalCents |
       | 0            | 0            | 0             | 0             | 0          | 0          |
       | 10           | 0            | 10            | 0             | 0          | 0          |
-      | 10           | 0            | 5             | 25            | 4          | 75         |
       | 10           | 50           | 5             | 25            | 5          | 25         |
       | 10           | 0            | 20            | 0             | -10        | 0          |
+      | 10           | 0            | 5             | 25            | 4          | 75         |
       | 5            | 0            | 10            | 25            | -5         | 25         |

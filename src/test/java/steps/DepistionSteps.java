@@ -38,8 +38,6 @@ public class DepistionSteps {
     private int port;
 
     private String uri;
-    @Autowired
-    private CucumberContext cucumberContext;
 
     @Before
     public void setUp() {
@@ -48,17 +46,17 @@ public class DepistionSteps {
     }
 
 
-    @When("^\"([^\"]*)\" deposits (.+).(.+)$")
+    @When("^\"([^\"]*)\" deposits (\\d+).(\\d+)$")
     public void something_deposits_(String clientId, Integer depositsamount, Integer depositscents) throws Throwable {
         Map<String, Integer> body = new HashMap<>();
         body.put("money", depositsamount);
         body.put("cents", depositscents);
-        Response response = RestAssured.given()
+        RestAssured.given()
                 .body(body)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post(uri + DEPOSIT_END_POINT, clientId);
-        cucumberContext.setResponse(response);
-
+                .post(uri + DEPOSIT_END_POINT, clientId)
+                .then()
+                .statusCode(200);
     }
 }

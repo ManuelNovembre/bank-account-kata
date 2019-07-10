@@ -10,7 +10,7 @@ public final class DepositCalculator {
     private DepositCalculator() {
     }
 
-    public static BankAccountJPA calculDeposit(String clientId, MoneyJPA moneyToDeposit, BankAccountJPA bankAccountJPA) {
+    public static BankAccountJPA calculate(String clientId, MoneyJPA moneyToDeposit, BankAccountJPA bankAccountJPA) {
         MoneyJPA savedMoney = bankAccountJPA.getMoney();
 
         int resultAmount = savedMoney.getEuros() + moneyToDeposit.getEuros();
