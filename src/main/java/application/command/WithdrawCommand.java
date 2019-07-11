@@ -1,8 +1,8 @@
 package application.command;
 
-import infra.BankAccountJPA;
-import infra.MoneyJPA;
+import model.BankAccount;
+import model.Money;
 
 public interface WithdrawCommand {
-    BankAccountJPA withdraw(String clientId, MoneyJPA moneyToWithdraw) throws Exception;
+    BankAccount withdraw(String clientId, Money moneyToWithdraw) throws Exception;
 }

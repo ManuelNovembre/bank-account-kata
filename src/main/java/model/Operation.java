@@ -1,4 +1,4 @@
-package infra;
+package model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,22 +13,23 @@ import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Entity(name = "operation")
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
 @ToString
-public class OperationJPA {
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+
+@Entity(name = "operation")
+public class Operation {
 	@Id
 	private String Id;
 
 	private LocalDate date;
 	private String operationType;
 	@Embedded
-	private MoneyJPA money;
+	private Money money;
 	@ManyToOne
-	private BankAccountJPA bankAccount;
+	private BankAccount bankAccount;
 
 	@Override
 	public boolean equals(Object o) {
@@ -36,13 +37,12 @@ public class OperationJPA {
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		OperationJPA that = (OperationJPA) o;
+		Operation that = (Operation) o;
 		return Objects.equals(Id, that.Id);
 	}
 
 	@Override
 	public int hashCode() {
-
 		return Objects.hash(Id);
 	}
 }

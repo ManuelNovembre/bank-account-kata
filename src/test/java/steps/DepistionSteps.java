@@ -1,28 +1,19 @@
 package steps;
 
 import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import exposition.BankAccountApplication;
-import infra.BankAccountJPA;
-import infra.MoneyJPA;
 import io.restassured.RestAssured;
-import io.restassured.response.Response;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import repository.BankAccountSpringDataRepository;
 
-import javax.servlet.ServletResponseWrapper;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = BankAccountApplication.class)

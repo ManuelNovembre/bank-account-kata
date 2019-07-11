@@ -1,7 +1,7 @@
 package repository;
 
-import infra.OperationJPA;
+import model.Operation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface OperationSpringDataRepository extends JpaRepository<OperationJPA, String> {
+public interface OperationSpringDataRepository extends JpaRepository<Operation, String> {
 }

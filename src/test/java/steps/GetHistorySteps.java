@@ -10,9 +10,9 @@ import exposition.BankAccountApplication;
 import exposition.dto.response.HistoryResponseDTO;
 import exposition.dto.response.MoneyResponseDTO;
 import exposition.dto.response.OperationResponseDTO;
-import infra.BankAccountJPA;
-import infra.MoneyJPA;
-import infra.OperationJPA;
+import model.BankAccount;
+import model.Money;
+import model.Operation;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseBody;
@@ -62,29 +62,29 @@ public class GetHistorySteps {
 	@Given("^a bank client \"([^\"]*)\" has the following operations saved$")
 	public void aBankClientHasTheFollowingOperationsSaved(String clientId, DataTable operations) throws Throwable {
 
-		BankAccountJPA bankAccountJPA = bankAccountSpringDataRepository.save(BankAccountJPA.builder().clientId(clientId).build());
+		BankAccount bankAccount = bankAccountSpringDataRepository.save(BankAccount.builder().clientId(clientId).build());
 
 		List<Map<String, String>> operationList = operations.asMaps(String.class, String.class);
 
-		List<OperationJPA> operationToSave = new ArrayList<>();
+		List<Operation> operationToSave = new ArrayList<>();
 
 		for (Map<String, String> cucumberOperation : operationList) {
 			operationToSave.add(
-					OperationJPA.builder()
-								.Id(UUID.randomUUID().toString())
-								.date(LocalDate.parse(cucumberOperation.get("date"), DateTimeFormatter.ISO_DATE))
-								.money(MoneyJPA.builder()
-											   .euros(mapToInteger(cucumberOperation.get("euros")))
-											   .cents(mapToInteger(cucumberOperation.get("cent")))
-											   .build())
-								.bankAccount(bankAccountJPA)
-								.operationType(cucumberOperation.get("operationType"))
-								.build()
+					Operation.builder()
+							 .Id(UUID.randomUUID().toString())
+							 .date(LocalDate.parse(cucumberOperation.get("date"), DateTimeFormatter.ISO_DATE))
+							 .money(Money.builder()
+											.euros(mapToInteger(cucumberOperation.get("euros")))
+											.cents(mapToInteger(cucumberOperation.get("cent")))
+											.build())
+							 .bankAccount(bankAccount)
+							 .operationType(cucumberOperation.get("operationType"))
+							 .build()
 			);
 		}
 
 		operationSpringDataRepository.saveAll(operationToSave);
-		List<OperationJPA> savedOperations = operationSpringDataRepository.findAll();
+		List<Operation> savedOperations = operationSpringDataRepository.findAll();
 
 		assertThat(savedOperations.size()).isEqualTo(savedOperations.size());
 	}

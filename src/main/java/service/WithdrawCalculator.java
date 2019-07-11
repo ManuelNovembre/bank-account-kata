@@ -1,7 +1,7 @@
 package service;
 
-import infra.BankAccountJPA;
-import infra.MoneyJPA;
+import model.BankAccount;
+import model.Money;
 
 public final class WithdrawCalculator {
 
@@ -10,23 +10,23 @@ public final class WithdrawCalculator {
     private WithdrawCalculator() {
     }
 
-    public static BankAccountJPA calculate(String clientId, MoneyJPA moneyToWithdraw, BankAccountJPA bankAccountJPA) {
-        MoneyJPA savedMoney = bankAccountJPA.getMoney();
+    public static BankAccount calculate(String clientId, Money moneyToWithdraw, BankAccount bankAccount) {
+        Money savedMoney = bankAccount.getMoney();
 
         int resultAmount = savedMoney.getEuros() - moneyToWithdraw.getEuros();
         int resultCent = savedMoney.getCents() - moneyToWithdraw.getCents();
 
-        MoneyJPA resultMoney = checkIfCentAdditionIsMoreThanOneEuro(resultAmount, resultCent);
+        Money resultMoney = checkIfCentAdditionIsMoreThanOneEuro(resultAmount, resultCent);
 
-        return new BankAccountJPA(clientId, resultMoney);
+        return new BankAccount(clientId, resultMoney);
     }
 
-    private static MoneyJPA checkIfCentAdditionIsMoreThanOneEuro(int resultAmount, int resultCent) {
+    private static Money checkIfCentAdditionIsMoreThanOneEuro(int resultAmount, int resultCent) {
         if (resultCent < 0 && resultAmount > 0) {
             resultAmount--;
             resultCent = ONE_EURO - Math.abs(resultCent);
         }
 
-        return new MoneyJPA(resultAmount, Math.abs(resultCent));
+        return new Money(resultAmount, Math.abs(resultCent));
     }
 }

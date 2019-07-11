@@ -1,9 +1,9 @@
 package application.query;
 
-import infra.OperationJPA;
+import model.Operation;
 
 import java.util.List;
 
 public interface GetHistoryQuery {
-	List<OperationJPA> getHistoryOperations(String clientId);
+	List<Operation> getHistoryOperations(String clientId);
 }

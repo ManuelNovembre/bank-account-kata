@@ -1,7 +1,7 @@
 package application.query;
 
-import infra.BankAccountJPA;
-import infra.OperationJPA;
+import model.BankAccount;
+import model.Operation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import repository.OperationSpringDataRepository;
@@ -19,13 +19,13 @@ public class GetHistoryQueryImpl implements GetHistoryQuery {
 	}
 
 	@Override
-	public List<OperationJPA> getHistoryOperations(String clientIdRequest) {
-		final List<OperationJPA> allHistory = operationSpringDataRepository.findAll();
+	public List<Operation> getHistoryOperations(String clientIdRequest) {
+		final List<Operation> allHistory = operationSpringDataRepository.findAll();
 
 		return allHistory.stream()
 						 .filter(e -> {
-							 final String clientId = Optional.ofNullable(e).map(OperationJPA::getBankAccount)
-															 .map(BankAccountJPA::getClientId)
+							 final String clientId = Optional.ofNullable(e).map(Operation::getBankAccount)
+															 .map(BankAccount::getClientId)
 															 .orElse(null);
 							 return StringUtils.equals(clientIdRequest, clientId);
 						 })

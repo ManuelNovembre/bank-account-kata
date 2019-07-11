@@ -1,8 +1,8 @@
 package application.command;
 
-import infra.BankAccountJPA;
-import infra.MoneyJPA;
+import model.BankAccount;
+import model.Money;
 
 public interface DepositCommand {
-    BankAccountJPA deposit(String clientId, MoneyJPA moneyToDeposit) throws Exception;
+    BankAccount deposit(String clientId, Money moneyToDeposit) throws Exception;
 }

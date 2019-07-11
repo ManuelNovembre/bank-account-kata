@@ -5,9 +5,9 @@ import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import exposition.BankAccountApplication;
-import infra.BankAccountJPA;
-import infra.MoneyJPA;
-import infra.OperationJPA;
+import model.BankAccount;
+import model.Money;
+import model.Operation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,13 +42,13 @@ public class CommonSteps {
 
     @Given("^a bank client \"([^\"]*)\" has (\\d+).(\\d+) in is account$")
     public void a_bank_client_something_has_in_is_account(String clientId, Integer initialAmount, Integer initialCents) throws Throwable {
-        MoneyJPA money = new MoneyJPA(initialAmount, initialCents);
+        Money money = new Money(initialAmount, initialCents);
 
-        BankAccountJPA bankAccount = new BankAccountJPA(clientId, money);
+        BankAccount bankAccount = new BankAccount(clientId, money);
 
-        BankAccountJPA savedBankAccount = bankAccountSpringDataRepository.save(bankAccount);
+        BankAccount savedBankAccount = bankAccountSpringDataRepository.save(bankAccount);
 
-        MoneyJPA savedmoney = savedBankAccount.getMoney();
+        Money savedmoney = savedBankAccount.getMoney();
         Integer savedAmount = savedmoney.getEuros();
         Integer savedCents = savedmoney.getCents();
 
@@ -60,10 +60,10 @@ public class CommonSteps {
 
     @Then("^\"([^\"]*)\" has \\+?(-?\\d+).(\\d+) in his account$")
     public void something_has_in_his_account(String clientId, Integer finalAmount, Integer finalCents) throws Throwable {
-        BankAccountJPA savedBankAccount = bankAccountSpringDataRepository.findById(clientId).orElse(null);
+        BankAccount savedBankAccount = bankAccountSpringDataRepository.findById(clientId).orElse(null);
         assertThat(savedBankAccount).isNotNull();
 
-        MoneyJPA savedAccount = savedBankAccount.getMoney();
+        Money savedAccount = savedBankAccount.getMoney();
 
         assertThat(savedAccount.getEuros()).isEqualTo(finalAmount);
         assertThat(savedAccount.getCents()).isEqualTo(finalCents);
@@ -74,20 +74,20 @@ public class CommonSteps {
         List<Map<String, String>> operationList = expectedOperations.asMaps(String.class, String.class);
 
         Map<String, String> cucumberOperation = operationList.get(0);
-        OperationJPA operationJPA = OperationJPA.builder()
-                .Id(UUID.randomUUID().toString())
-                .date(Optional.ofNullable(cucumberOperation.get("date")).map(e -> LocalDate.parse(e, DateTimeFormatter.BASIC_ISO_DATE)).orElse(null))
-                .money(MoneyJPA.builder()
-							   .euros(mapToInteger(cucumberOperation.get("euros")))
-							   .cents(mapToInteger(cucumberOperation.get("cent")))
-							   .build())
-                .operationType(cucumberOperation.get("operationType"))
-                .build();
+        Operation operation = Operation.builder()
+                                       .Id(UUID.randomUUID().toString())
+                                       .date(Optional.ofNullable(cucumberOperation.get("date")).map(e -> LocalDate.parse(e, DateTimeFormatter.BASIC_ISO_DATE)).orElse(null))
+                                       .money(Money.builder()
+                            .euros(mapToInteger(cucumberOperation.get("euros")))
+                            .cents(mapToInteger(cucumberOperation.get("cent")))
+                            .build())
+                                       .operationType(cucumberOperation.get("operationType"))
+                                       .build();
 
-        List<OperationJPA> savedOperations = operationSpringDataRepository.findAll();
+        List<Operation> savedOperations = operationSpringDataRepository.findAll();
         assertThat(savedOperations).isNotEmpty();
 
-        assertThat(savedOperations.stream().anyMatch(e -> StringUtils.equals(e.getOperationType(), operationJPA.getOperationType()))).isTrue();
+        assertThat(savedOperations.stream().anyMatch(e -> StringUtils.equals(e.getOperationType(), operation.getOperationType()))).isTrue();
     }
 
     private Integer mapToInteger(String value) {

@@ -1,7 +1,7 @@
 package service;
 
-import infra.BankAccountJPA;
-import infra.MoneyJPA;
+import model.BankAccount;
+import model.Money;
 
 public final class DepositCalculator {
 
@@ -10,16 +10,16 @@ public final class DepositCalculator {
     private DepositCalculator() {
     }
 
-    public static BankAccountJPA calculate(String clientId, MoneyJPA moneyToDeposit, BankAccountJPA bankAccountJPA) {
-        MoneyJPA savedMoney = bankAccountJPA.getMoney();
+    public static BankAccount calculate(String clientId, Money moneyToDeposit, BankAccount bankAccount) {
+        Money savedMoney = bankAccount.getMoney();
 
         int resultAmount = savedMoney.getEuros() + moneyToDeposit.getEuros();
         int resultCent = savedMoney.getCents() + moneyToDeposit.getCents();
 
         resultAmount = checkIfCentAdditionIsMoreThanOneEuro(resultAmount, resultCent);
 
-        MoneyJPA resultMoney = new MoneyJPA(resultAmount, resultCent);
-        return new BankAccountJPA(clientId, resultMoney);
+        Money resultMoney = new Money(resultAmount, resultCent);
+        return new BankAccount(clientId, resultMoney);
     }
 
     private static int checkIfCentAdditionIsMoreThanOneEuro(int resultAmount, int resultCent) {
