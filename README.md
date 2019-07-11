@@ -10,3 +10,4 @@ REST Api with Springboot, H2 database, Swagger UI & cucumber
 
  3. go to http://localhost:8080/swagger-ui.html
 
+![Alt text](swagger_ex.PNG?raw=true "swagger_example")
