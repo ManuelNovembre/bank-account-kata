@@ -1,4 +1,4 @@
-package command;
+package application.command;
 
 import infra.BankAccountJPA;
 import infra.MoneyJPA;

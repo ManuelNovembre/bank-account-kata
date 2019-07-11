@@ -2,6 +2,7 @@ package infra;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -16,62 +17,32 @@ import java.util.Objects;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 @ToString
 public class OperationJPA {
-    @Id
+	@Id
+	private String Id;
 
-    private String Id;
+	private LocalDate date;
+	private String operationType;
+	@Embedded
+	private MoneyJPA money;
+	@ManyToOne
+	private BankAccountJPA bankAccount;
 
-    private LocalDate date;
-    private String operationType;
-    @Embedded
-    private MoneyJPA money;
-    @ManyToOne
-    private BankAccountJPA bankAccount;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		OperationJPA that = (OperationJPA) o;
+		return Objects.equals(Id, that.Id);
+	}
 
-    public String getId() {
-        return Id;
-    }
+	@Override
+	public int hashCode() {
 
-    public void setId(String id) {
-        Id = id;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public String getOperationType() {
-        return operationType;
-    }
-
-    public void setOperationType(String operationType) {
-        this.operationType = operationType;
-    }
-
-    public MoneyJPA getMoney() {
-        return money;
-    }
-
-    public void setMoney(MoneyJPA money) {
-        this.money = money;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OperationJPA that = (OperationJPA) o;
-        return Objects.equals(Id, that.Id);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(Id);
-    }
+		return Objects.hash(Id);
+	}
 }

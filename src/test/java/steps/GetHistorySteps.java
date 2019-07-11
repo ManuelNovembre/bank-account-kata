@@ -2,15 +2,14 @@ package steps;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cucumber.api.DataTable;
-import cucumber.api.PendingException;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import exposition.BankAccountApplication;
-import exposition.dto.HistoryResponseDTO;
-import exposition.dto.MoneyResponseDTO;
-import exposition.dto.OperationResponseDTO;
+import exposition.dto.response.HistoryResponseDTO;
+import exposition.dto.response.MoneyResponseDTO;
+import exposition.dto.response.OperationResponseDTO;
 import infra.BankAccountJPA;
 import infra.MoneyJPA;
 import infra.OperationJPA;
@@ -117,7 +116,6 @@ public class GetHistorySteps {
 		List<Map<String, String>> operationList = expectedHistoryDTO.asMaps(String.class, String.class);
 
 		List<OperationResponseDTO> ResultOperation = new ArrayList<>();
-
 		operationList.forEach(cucumberOperation -> {
 			ResultOperation.add(
 					OperationResponseDTO.builder()
@@ -130,21 +128,22 @@ public class GetHistorySteps {
 										.build()
 			);
 
-			HistoryResponseDTO.builder().history(ResultOperation).build();
-
-			final String body = Optional.ofNullable(response.getBody())
-										.map(ResponseBody::print)
-										.orElse(StringUtils.EMPTY);
-			assertThat(body).isNotEmpty();
-
-			try {
-				new ObjectMapper().readValue(body, HistoryResponseDTO.class);
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage(), e);
-				fail("can't map body response to DTO");
-			}
-
-			throw new PendingException();
 		});
+		final HistoryResponseDTO expectedHistoryResponseDTO = HistoryResponseDTO.builder().history(ResultOperation).build();
+
+		final String body = Optional.ofNullable(response.getBody())
+									.map(ResponseBody::print)
+									.orElse(StringUtils.EMPTY);
+		assertThat(body).isNotEmpty();
+
+		HistoryResponseDTO actualHistoryResponseDTO = null;
+		try {
+			actualHistoryResponseDTO = new ObjectMapper().readValue(body, HistoryResponseDTO.class);
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
+			fail("can't map body response to DTO");
+		}
+		assertThat(actualHistoryResponseDTO).isEqualTo(expectedHistoryResponseDTO);
+
 	}
 }

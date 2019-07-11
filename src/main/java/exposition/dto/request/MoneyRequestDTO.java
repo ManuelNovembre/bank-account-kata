@@ -1,13 +1,13 @@
-package exposition.dto;
+package exposition.dto.request;
 
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class BankRequestDTO {
+public class MoneyRequestDTO {
     private Integer money;
     private Integer cents;
 
-    public BankRequestDTO(Integer money, Integer cents) {
+    public MoneyRequestDTO(Integer money, Integer cents) {
         this.money = money;
         this.cents = cents;
     }
