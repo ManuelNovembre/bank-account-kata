@@ -7,9 +7,9 @@ Feature: make a deposit
 
     Then "Franck" has <finalEuros>.<finalCents> in his account
 
-    And the operation is saved in his history
-      | Date       | Operation | euros           | cent            |
-      | 2019-07-11 | Withdraw  | <depositsEuros> | <depositsCents> |
+    And  the operation is saved in his history
+      | operationType | euros           | cent            |
+      | Deposit      | <depositsEuros> | <depositsCents> |
 
     Examples:
       | initialEuros | initialCents | depositsEuros | depositsCents | finalEuros | finalCents |

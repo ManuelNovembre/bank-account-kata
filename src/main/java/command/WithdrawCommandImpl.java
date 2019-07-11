@@ -2,27 +2,43 @@ package command;
 
 import infra.BankAccountJPA;
 import infra.MoneyJPA;
+import infra.OperationJPA;
 import org.springframework.stereotype.Component;
 import repository.BankAccountSpringDataRepository;
-import service.DepositCalculator;
+import repository.OperationSpringDataRepository;
 import service.WithdrawCalculator;
+
+import java.time.LocalDate;
+import java.util.UUID;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class WithdrawCommandImpl implements WithdrawCommand {
     private static final org.slf4j.Logger LOGGER = getLogger(WithdrawCommandImpl.class);
+    private static final String WITHDRAW_OPERATION_TYPE = "Withdraw";
 
     private final BankAccountSpringDataRepository bankAccountSpringDataRepository;
+    private final OperationSpringDataRepository operationSpringDataRepository;
 
-    public WithdrawCommandImpl(BankAccountSpringDataRepository bankAccountSpringDataRepository) {
+    public WithdrawCommandImpl(BankAccountSpringDataRepository bankAccountSpringDataRepository, OperationSpringDataRepository operationSpringDataRepository) {
         this.bankAccountSpringDataRepository = bankAccountSpringDataRepository;
+        this.operationSpringDataRepository = operationSpringDataRepository;
     }
 
     @Override
     public BankAccountJPA withdraw(String clientId, MoneyJPA moneyToWithdraw) throws Exception {
         BankAccountJPA bankAccountJPA = retrieveBankAccount(clientId);
-        return bankAccountSpringDataRepository.save(WithdrawCalculator.calculate(clientId, moneyToWithdraw, bankAccountJPA));
+
+        final BankAccountJPA bankAccountToSave = WithdrawCalculator.calculate(clientId, moneyToWithdraw, bankAccountJPA);
+        operationSpringDataRepository.save(OperationJPA.builder()
+                .Id(UUID.randomUUID().toString())
+                .date(LocalDate.now())
+                .moneyJPA(bankAccountToSave.getMoney())
+                .operationType(WITHDRAW_OPERATION_TYPE)
+                .build());
+
+        return bankAccountSpringDataRepository.save(bankAccountToSave);
     }
 
     private BankAccountJPA retrieveBankAccount(String clientId) throws Exception {

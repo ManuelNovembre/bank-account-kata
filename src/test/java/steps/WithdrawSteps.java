@@ -17,10 +17,8 @@ import repository.BankAccountSpringDataRepository;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = BankAccountApplication.class)
 @ContextConfiguration(classes = {CucumberConfiguration.class})
 public class WithdrawSteps {
