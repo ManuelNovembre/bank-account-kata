@@ -6,5 +6,5 @@ Bank Account kata
 
  2. java -jar 
 
- 3. go to http://localhost:8080/
+ 3. go to http://localhost:8080/swagger-ui.html
 
