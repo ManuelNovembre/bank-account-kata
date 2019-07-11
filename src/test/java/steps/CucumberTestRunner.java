@@ -11,7 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 @CucumberOptions(
         strict = true,
         features = "classpath:features/",
-//        tags = {"@MN"},
+        tags = {"@MN"},
         plugin = {"pretty", "html:target/cucumber", "json:target/cucumber-reports/cucumber.json"},
         glue = "steps")
 public class CucumberTestRunner {

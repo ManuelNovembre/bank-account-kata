@@ -1,3 +1,4 @@
+@MN
 Feature: check account history
 
   Scenario: get account history

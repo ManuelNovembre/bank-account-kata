@@ -2,6 +2,7 @@ package steps;
 
 import cucumber.api.DataTable;
 import cucumber.api.PendingException;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -9,17 +10,22 @@ import exposition.BankAccountApplication;
 import infra.BankAccountJPA;
 import infra.MoneyJPA;
 import infra.OperationJPA;
+import io.restassured.RestAssured;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import repository.BankAccountSpringDataRepository;
 import repository.OperationSpringDataRepository;
 
+import javax.xml.crypto.Data;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,11 +43,22 @@ public class GetHistorySteps {
     @Autowired
     private BankAccountSpringDataRepository bankAccountSpringDataRepository;
     private static final org.slf4j.Logger LOGGER = getLogger(GetHistorySteps.class);
+    private String uri;
+    private static final String HISTORY_END_POINT = "/bank/{clientId}/history";
+    @LocalServerPort
+    private int port;
+
+    @Before
+    public void setUp() throws Exception {
+        RestAssured.port = port;
+        uri = "http://localhost:" + port;
+    }
 
     @Given("^a bank client \"([^\"]*)\" has the following operations saved$")
     public void aBankClientHasTheFollowingOperationsSaved(String clientId, DataTable operations) throws Throwable {
 
         BankAccountJPA bankAccountJPA = bankAccountSpringDataRepository.save(BankAccountJPA.builder().clientId(clientId).build());
+
 
         List<Map<String, String>> operationList = operations.asMaps(String.class, String.class);
 
@@ -75,13 +92,18 @@ public class GetHistorySteps {
     }
 
     @When("^\"([^\"]*)\" check his history$")
-    public void checkHisHistory(String arg0) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    public void checkHisHistory(String clientId) throws Throwable {
+        RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get(uri + HISTORY_END_POINT, clientId)
+                .then()
+                .statusCode(200);
     }
 
+
     @Then("^systems returns the following operations$")
-    public void systemsReturnsTheFollowingOperations() throws Throwable {
+    public void systemsReturnsTheFollowingOperations(DataTable expectedHistoryDTO) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }

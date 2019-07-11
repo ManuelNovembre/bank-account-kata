@@ -4,9 +4,11 @@ import command.DepositCommand;
 import command.WithdrawCommand;
 import exposition.dto.BankRequestDTO;
 import exposition.dto.BankResponseDTO;
+import exposition.dto.HistoryResponseDTO;
 import infra.MoneyJPA;
 import io.swagger.annotations.Api;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,6 +53,16 @@ public class BankController {
         withdrawCommand.withdraw(clientId, moneyToDeposit);
 
         BankResponseDTO responseDTO = null;
+        return new ResponseEntity<>(responseDTO, OK);
+
+    }
+
+    @GetMapping(path = "/{clientId}/history", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<HistoryResponseDTO> getHistory(@PathVariable(name = "clientId") String clientId) throws Exception {
+
+
+        HistoryResponseDTO responseDTO = null;
+
         return new ResponseEntity<>(responseDTO, OK);
 
     }
