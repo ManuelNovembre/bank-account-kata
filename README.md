@@ -1,6 +1,8 @@
 # bank-account-kata
 Bank Account kata
 
+REST Api with Springboot, H2 database, Swagger UI
+
 # To run : 
  1. run mvn clean install
 
